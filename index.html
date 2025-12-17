@@ -1,1 +1,181 @@
-temp
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Noise and Learning — Student Survey</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: auto;
+  padding: 25px;
+  line-height: 1.6;
+}
+h1,h2{
+  text-align: center;
+}
+.question{
+  margin-bottom: 20px;
+}
+.answers label{
+  display:block;
+  margin: 4px 0;
+}
+button{
+  padding:12px 18px;
+  font-size:16px;
+  border:none;
+  border-radius:10px;
+  background:#111;
+  color:white;
+  cursor:pointer;
+}
+.result{
+  margin-top:30px;
+  padding:20px;
+  border-radius:14px;
+}
+.green{background:#e7f8e7;border:1px solid #5cb85c;}
+.yellow{background:#fff6db;border:1px solid #f0ad4e;}
+.orange{background:#ffe9d6;border:1px solid #f08c46;}
+.red{background:#ffe3e3;border:1px solid #d9534f;}
+a{font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<h1>Noise and Learning</h1>
+<p style="text-align:center">
+Social research questionnaire on the unnoticed effects of noise on students’ learning.
+</p>
+
+<form id="survey" onsubmit="return false;"></form>
+
+<div style="text-align:center">
+  <button onclick="calculateResult()">Get Result</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+const questions = [
+"I am able to maintain concentration during study sessions for a long time.",
+"I find it difficult to stay focused on academic tasks.",
+"My attention shifts easily during learning activities.",
+"I need to re-read information to fully understand it.",
+"I lose focus even when the material is not complex.",
+
+"I feel mentally tired earlier than expected while studying.",
+"After studying, I feel exhausted even if the task was not difficult.",
+"I experience mental overload during academic work.",
+"I need frequent breaks in order to continue studying.",
+"I feel relief when my environment becomes quieter.",
+
+"I feel irritated during study sessions without a clear reason.",
+"Minor disturbances affect my emotional state.",
+"I feel tense while completing academic tasks.",
+"I experience stress during normal learning situations.",
+"I feel more comfortable in quiet environments.",
+
+"I postpone studying despite having enough time.",
+"I prefer studying at times when my surroundings are quieter.",
+"I change my study location in search of better conditions.",
+"I avoid studying in places with background noise.",
+"I use strategies to reduce external distractions.",
+
+"I believe that my learning environment affects my academic performance.",
+"I do not usually think of noise as a significant factor in my studies.",
+"I underestimate how much external factors influence my concentration.",
+"I blame myself for difficulties with focus and productivity.",
+"I rarely reflect on how background sounds affect my learning.",
+
+"I complete academic tasks slower than expected.",
+"I feel less productive than I could be.",
+"I lose motivation during study sessions.",
+"Studying requires considerable mental effort from me.",
+"My academic performance improves in quieter conditions."
+];
+
+const form = document.getElementById("survey");
+
+questions.forEach((q, i) => {
+  form.innerHTML += `
+    <div class="question">
+      <p><b>${i+1}. ${q}</b></p>
+      <div class="answers">
+        <label><input type="radio" name="q${i}" value="4" required> Very much</label>
+        <label><input type="radio" name="q${i}" value="3"> Mostly</label>
+        <label><input type="radio" name="q${i}" value="2"> Neutral</label>
+        <label><input type="radio" name="q${i}" value="1"> Not really</label>
+        <label><input type="radio" name="q${i}" value="0"> Not at all</label>
+      </div>
+    </div>
+  `;
+});
+
+function calculateResult(){
+  let total = 0;
+  for(let i=0;i<30;i++){
+    const answer = document.querySelector(`input[name="q${i}"]:checked`);
+    if(!answer){
+      alert("Please answer all questions.");
+      return;
+    }
+    total += Number(answer.value);
+  }
+
+  let cls = "";
+let text = "";
+let link = "";
+
+if (total <= 30) {
+  cls = "green";
+  text = "Minimal impact of noise on learning.";
+  link = "results/low-impact.html";
+} else if (total <= 60) {
+  cls = "yellow";
+  text = "Hidden influence of noise on concentration and fatigue.";
+  link = "results/hidden-impact.html";
+} else if (total <= 90) {
+  cls = "orange";
+  text = "Noticeable negative impact of noise on learning efficiency.";
+  link = "results/moderate-impact.html";
+} else {
+  cls = "red";
+  text = "Strong negative impact of noise on learning and well-being.";
+  link = "results/high-impact.html";
+}
+
+document.getElementById("result").innerHTML = `
+  <div class="result ${cls}">
+    <h2>Result</h2>
+
+    <p style="font-size:14px;color:#555">
+      <b>Please note:</b> your result will not be saved automatically.
+      To avoid repeating the questionnaire, you may take a screenshot of your result.
+    </p>
+
+    <p><b>Total score:</b> ${total} / 120</p>
+    <p>${text}</p>
+
+    <p>
+      <a href="${link}" target="_blank">
+        View personalised recommendations
+      </a>
+    </p>
+
+    <p style="font-size:14px">
+      This questionnaire is part of a social research project and does not provide a medical diagnosis.
+    </p>
+  </div>
+`;
+
+  document.getElementById("result").scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+</body>
+</html>
